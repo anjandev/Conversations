@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -14,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AlertDialog;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -31,6 +33,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -118,6 +121,7 @@ import eu.siacs.conversations.xmpp.chatstate.ChatState;
 import eu.siacs.conversations.xmpp.jingle.JingleConnection;
 import rocks.xmpp.addr.Jid;
 
+import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 import static eu.siacs.conversations.ui.XmppActivity.EXTRA_ACCOUNT;
 import static eu.siacs.conversations.ui.XmppActivity.REQUEST_INVITE_TO_CONVERSATION;
 import static eu.siacs.conversations.ui.util.SoftKeyboardUtils.hideSoftKeyboard;
@@ -170,6 +174,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private Toast messageLoaderToast;
     private ConversationsActivity activity;
     private boolean reInitRequiredOnStart = true;
+
+    // Global
+    private GestureDetectorCompat detector;
+
+    // In OnCreate or custome view constructor (which extends one of Android views)
+
     private OnClickListener clickToMuc = new OnClickListener() {
 
         @Override
@@ -940,7 +950,34 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        OnSwipeListener onSwipeListener = new OnSwipeListener() {
+            @Override
+            public boolean onSwipe(Path.Direction direction) {
+
+                // Possible implementation
+                if (direction == Path.Direction.left || direction == Path.Direction.right) {
+                    // Do something COOL like animation or whatever you want
+                    // Refer to your view if needed using a global reference
+                    return true;
+                } else if (direction == Path.Direction.up || direction == Path.Direction.down) {
+                    // Do something COOL like animation or whatever you want
+                    // Refer to your view if needed using a global reference
+                    return true;
+                }
+
+                return super.onSwipe(direction);
+            }
+        };
+
+        detector = new GestureDetectorCompat(getActivity(), onSwipeListener);
     }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return detector.onTouchEvent(motionEvent);
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
