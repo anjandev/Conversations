@@ -97,6 +97,7 @@ android {
         resValue "string", "applicationId", applicationId
         resValue "string", "app_name", "Conversations"
         buildConfigField "String", "LOGTAG", "\"conversations\""
+        testInstrumentationRunnerArguments disableAnalytics: 'true'
     }
 
     dataBinding {
